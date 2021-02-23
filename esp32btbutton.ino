@@ -1,6 +1,6 @@
 #include <BleKeyboard.h>
 
-//BleKeyboard bleKeyboard; // Sets Device name
+BleKeyboard bleKeyboard; // Sets Device name
 
 const int key1 = 23; // Key 1 is on pin 23
 const int key2 = 24; // Key 2 is on pin 24
@@ -8,7 +8,7 @@ const int key3 = 19; // Key 3 is on pin 19
 const int key4 = 17; // Key 4 is on pin 17
 const int redLed = 11; // Pin for red anode of LED
 const int greenLed = 10; // Pin for green anode of LED
-float maxVoltage = 4.20;
+float maxVoltage = 4.20; // Highest battery voltage value
 
 void setup() {
   // Configuring pinModes
@@ -29,7 +29,7 @@ void setup() {
 
 void loop() {
   // External button presses trigger key presses
-    if (bleKeyboard.isConnected()) {
+  if (bleKeyboard.isConnected()) {
     Serial.println("BT Connected");
     // Blinks LED green 5 times when bluetooth connects
     for (int i = 0; i < 5; i++) {
@@ -63,7 +63,7 @@ void loop() {
   // Releases keys after key4 is low, this could be done better.
   if digitalRead(key4) == LOW) {
     Serial.println("Releasing keys")
-    delay(100);
+    delay(50);
     bleKeyboard.releaseAll();
   }
 
@@ -75,9 +75,9 @@ void loop() {
     digitalWrite(redLed, HIGH);
     delay(1000);
     digitalWrite(redLed, LOW);
-    delay(1000)
+    delay(1000);
   }
-  // Batery voltage reporting (Needs to be referenced to 3.40v instead of 0v)
-  float batteryPercent = voltage / maxVoltage; 
+  // Battery voltage reporting (Now reference to the 3.40v minimum)
+  float batteryPercent = map(voltage, 3.40, 4.20, 0, 100); // I hope this works
   bleKeyboard.setBatteryLevel(batteryPercent); 
 }
